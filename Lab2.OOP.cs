@@ -1,70 +1,71 @@
 ﻿using System;
 
-namespace ConsoleApplication1
+public class SinFunction
 {
-    public class Function
+    private double a; // коефіцієнт a
+    private double b; // коефіцієнт b
+
+    // Конструктор класу
+    public SinFunction(double a, double b)
     {
-        // Поля для коефіцієнтів функції
-        private double a, b, c;
-
-        // Конструктор для ініціалізації коефіцієнтів a, b і c
-        public Function(double a, double b, double c)
-        {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-
-        // Метод для обчислення значення функції в точці x
-        public double Evaluate(double x)
-        {
-            return -a * x * x + b * x + c;
-        }
-
-        // Метод для знаходження точки максимуму
-        public double GetMaximumPoint()
-        {
-            return -b / (2 * a);
-        }
-
-        // Метод для перевірки, чи приймає функція найбільше значення в точці x
-        public bool IsMaximumAt(double x)
-        {
-            double maxPoint = GetMaximumPoint(); // Точка максимуму
-            double maxValue = Evaluate(maxPoint); // Значення функції в точці максимуму
-            double valueAtX = Evaluate(x);        // Значення функції у введеній точці
-
-            // Перевірка, чи значення функції в точці x дорівнює максимальному значенню
-            return Math.Abs(valueAtX - maxValue) < 1e-6;
-        }
+        this.a = a;
+        this.b = b;
     }
 
-    class TestFunction
+    // Метод для обчислення значення функції sin(ax + b) в точці x
+    public double Evaluate(double x)
     {
-        static void Main()
+        return Math.Sin(a * x + b);
+    }
+
+    // Метод для перевірки, чи є точка x максимальною
+    public bool IsMaximum(double x)
+    {
+        // Обчислюємо значення функції в точці x
+        double valueAtX = Evaluate(x);
+
+        // Перевіряємо, чи функція має більше значення, ніж в сусідніх точках
+        double delta = 0.0001; // мале зміщення для порівняння
+
+        double valueAtXPlusDelta = Evaluate(x + delta);
+        double valueAtXMinusDelta = Evaluate(x - delta);
+
+        // Якщо значення в точці x більше за значення в сусідніх точках, то x - максимум
+        if (valueAtX > valueAtXPlusDelta && valueAtX > valueAtXMinusDelta)
         {
-            // Ініціалізація функції з коефіцієнтами a, b, c
-            Function function = new Function(1, -4, 3);
+            return true;
+        }
 
-            Console.Write("Введіть значення x: ");
-            double x = Convert.ToDouble(Console.ReadLine());
+        return false;
+    }
+}
 
-            // Перевірка, чи функція приймає максимальне значення у введеній точці
-            if (function.IsMaximumAt(x))
-            {
-                Console.WriteLine($"Функція приймає найбільше значення в точці x = {x}.");
-            }
-            else
-            {
-                Console.WriteLine($"Функція не приймає найбільше значення в точці x = {x}.");
-            }
+class Program
+{
+    static void Main()
+    {
+        // Введення коефіцієнтів a і b
+        Console.WriteLine("Введіть коефіцієнт a:");
+        double a = Convert.ToDouble(Console.ReadLine());
 
-            // Виведення значення функції у точці x
-            double value = function.Evaluate(x);
-            Console.WriteLine($"Значення функції в точці x = {x} дорівнює {value}");
+        Console.WriteLine("Введіть коефіцієнт b:");
+        double b = Convert.ToDouble(Console.ReadLine());
 
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
+        // Введення точки x
+        Console.WriteLine("Введіть точку x:");
+        double x = Convert.ToDouble(Console.ReadLine());
+
+        // Створення об'єкта функції
+        SinFunction sinFunction = new SinFunction(a, b);
+
+        // Перевірка, чи приймає функція найбільше значення в точці x
+        if (sinFunction.IsMaximum(x))
+        {
+            Console.WriteLine($"Функція sin({a}x + {b}) має найбільше значення в точці x = {x}.");
+        }
+        else
+        {
+            Console.WriteLine($"Функція sin({a}x + {b}) не має найбільше значення в точці x = {x}.");
         }
     }
 }
